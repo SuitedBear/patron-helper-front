@@ -1,6 +1,6 @@
 import React from 'react';
-import './App.css';
-import DataView from './components/DataView';
+import { render } from '@testing-library/react';
+import DataView from '../components/DataView';
 
 const mockJson = [
   {
@@ -33,24 +33,15 @@ const mockJson = [
   }
 ];
 
-class App extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      userData: {
-        dataTable: mockJson
-      }
-    };
-  }
-
-  render () {
-    return (
-      <div id='App'>
-        <div>it's alive</div>
-        <DataView data={this.state.userData.dataTable} />
-      </div>
-    );
-  }
-}
-
-export default App;
+describe('DataView component methods', () => {
+  describe('handleSort method', () => {
+    test('should return map to state.sortMap', () => {
+      const component = render(
+        <DataView
+          data={mockJson}
+        />
+      );
+      expect(component.getByText('Zenek')).toBeInTheDocument();
+    });
+  });
+});

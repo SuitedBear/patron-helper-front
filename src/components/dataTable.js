@@ -2,14 +2,14 @@ import React from 'react';
 
 function DataRow (props) {
   const row = [];
-  for (const key of props.keys) {
+  for (const colName of props.keys) {
     row.push(
       <span
         style={{ border: '1px solid black', padding: '1px' }}
-        key={key}
+        key={colName}
         onDoubleClick={(e) => props.onRowClick(e, props.data)}
       >
-        {`${props.data[key]}`}
+        {`${props.data[colName]}`}
       </span>
     );
   }
@@ -21,68 +21,36 @@ function DataRow (props) {
   );
 }
 
-class DataTable extends React.Component {
-  constructor (props) {
-    super(props);
-    const sortMap = new Map();
-    this.props.data.keys.forEach(key => {
-      sortMap.set(key, true);
-    });
-    this.state = {
-      sortedTable: this.props.data.dataTable,
-      sortMap: sortMap
-    };
-  }
+function DataTable (props) {
+  const { dataMap, sortMap } = props;
+  const keys = Array.from(sortMap.keys());
+  const titleRow = keys.map(key => (
+    <button
+      key={key}
+      onClick={() => props.onHandleSort(key)}
+    >
+      {key}
+    </button>
+  ));
 
-  handleSort (key) {
-    const sortMap = this.state.sortMap;
-    const table = this.state.sortedTable.sort((a, b) => {
-      if (a[key] === b[key]) return 0;
-      if (sortMap.get(key)) {
-        return (a[key] > b[key]) ? 1 : -1;
-      } else {
-        return (a[key] < b[key]) ? 1 : -1;
-      }
-    });
-    sortMap.set(key, !sortMap.get(key));
-    this.setState({
-      sortedTable: table,
-      sortMap: sortMap
-    });
-  }
-
-  handleDataRow (event, dataObj) {
-    console.log(event.target);
-    console.log(event.target.parentNode);
-    console.log(dataObj);
-  }
-
-  render () {
-    const titleRow = this.props.data.keys.map(key => (
-      <button
-        key={key}
-        onClick={() => this.handleSort(key)}
-      >
-        {key}
-      </button>
-    ));
-
-    const rows = this.state.sortedTable.map((entry) => (
+  const rows = [];
+  for (const entry of dataMap) {
+    rows.push(
       <DataRow
-        key={entry[this.props.data.keys[0]]}
-        data={entry}
-        keys={this.props.data.keys}
-        onRowClick={this.handleDataRow}
+        key={entry[0]}
+        data={entry[1]}
+        keys={keys}
+        onRowClick={props.onHandleDataRow}
       />
-    ));
-
-    return (
-      <ul style={{ listStyle: 'none' }}>
-        <li>{titleRow}</li>
-        {rows}
-      </ul>
     );
   }
+
+  return (
+    <ul style={{ listStyle: 'none' }}>
+      <li>{titleRow}</li>
+      {rows}
+    </ul>
+  );
 }
 
 export default DataTable;
