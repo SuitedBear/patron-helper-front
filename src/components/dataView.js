@@ -76,13 +76,15 @@ export class DataView extends React.Component {
     return (
       <div>
         {
-          (this.state.focus < 0)
+          (true || this.state.focus < 0)
             ? (
               <DataTable
+                focusIx={this.state.focus}
                 dataMap={this.state.dataMap}
                 sortMap={this.state.sortMap}
                 onHandleSort={this.handleSort}
                 onHandleDataRow={this.handleDataRow}
+                onHandleEdit={this.handleEdit}
               />
             )
             : (

@@ -1,4 +1,5 @@
 import React from 'react';
+import EditNode from './EditNode';
 
 function DataRow (props) {
   const row = [];
@@ -35,14 +36,22 @@ function DataTable (props) {
 
   const rows = [];
   for (const entry of dataMap) {
-    rows.push(
-      <DataRow
-        key={entry[0]}
-        data={entry[1]}
-        keys={keys}
-        onRowClick={props.onHandleDataRow}
-      />
-    );
+    (entry[0] === props.focusIx)
+      ? rows.push(
+        <EditNode
+          key={entry[0]}
+          dataPoint={props.dataMap.get(props.focusIx)}
+          onHandleEdit={props.onHandleEdit}
+        />
+      )
+      : rows.push(
+        <DataRow
+          key={entry[0]}
+          data={entry[1]}
+          keys={keys}
+          onRowClick={props.onHandleDataRow}
+        />
+      );
   }
 
   return (
