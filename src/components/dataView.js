@@ -1,6 +1,6 @@
 import React from 'react';
-import DataTable from './DataTable';
-import EditNode from './EditNode';
+import DataRow from './DataRow';
+import EditRow from './EditRow';
 
 export class DataView extends React.Component {
   constructor (props) {
@@ -12,31 +12,15 @@ export class DataView extends React.Component {
     const dataMap = new Map();
     this.props.data.forEach(dataObj => dataMap.set(dataObj.id, dataObj));
     this.state = {
-      focus: -1,
+      editFocus: -1,
       sortedData: this.props.data,
       sortMap: sortMap,
       dataMap: dataMap
     };
     this.handleSort = this.handleSort.bind(this);
     this.handleDataRow = this.handleDataRow.bind(this);
-    this.handleReturn = this.handleReturn.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
   }
-
-  // _handleSort (key) {
-  //   const sortMap = new Map(this.state.sortMap);
-  //   const table = this.state.sortedData.sort((a, b) => {
-  //     if (a[key] === b[key]) return 0;
-  //     return (sortMap.get(key))
-  //       ? (a[key] > b[key]) ? 1 : -1
-  //       : (a[key] < b[key]) ? 1 : -1;
-  //   });
-  //   sortMap.set(key, !sortMap.get(key));
-  //   this.setState({
-  //     sortedData: table,
-  //     sortMap: sortMap
-  //   });
-  // }
 
   handleSort (key) {
     const sortMap = new Map(this.state.sortMap);
@@ -59,43 +43,52 @@ export class DataView extends React.Component {
     console.log(event.target);
     console.log(event.target.parentNode);
     console.log(dataObj);
-    this.setState({ focus: dataObj.id });
-  }
-
-  handleReturn (event) {
-    event.preventDefault();
-    this.setState({ focus: -1 });
+    this.setState({ editFocus: dataObj.id });
   }
 
   handleEdit (event) {
     event.preventDefault();
     console.log(event);
+    this.setState({ editFocus: -1 });
   }
 
   render () {
+    const { dataMap, sortMap, editFocus } = this.state;
+    const keys = Array.from(sortMap.keys());
+    const titleRow = keys.map(key => (
+      <button
+        key={key}
+        onClick={() => this.handleSort(key)}
+      >
+        {key}
+      </button>
+    ));
+
+    const rows = [];
+    for (const entry of dataMap) {
+      (entry[0] === editFocus)
+        ? rows.push(
+          <EditRow
+            key={entry[0]}
+            dataPoint={dataMap.get(editFocus)}
+            onHandleEdit={this.handleEdit}
+          />
+        )
+        : rows.push(
+          <DataRow
+            key={entry[0]}
+            data={entry[1]}
+            keys={keys}
+            onRowClick={this.handleDataRow}
+          />
+        );
+    }
+
     return (
-      <div>
-        {
-          (true || this.state.focus < 0)
-            ? (
-              <DataTable
-                focusIx={this.state.focus}
-                dataMap={this.state.dataMap}
-                sortMap={this.state.sortMap}
-                onHandleSort={this.handleSort}
-                onHandleDataRow={this.handleDataRow}
-                onHandleEdit={this.handleEdit}
-              />
-            )
-            : (
-              <EditNode
-                dataPoint={this.state.dataMap.get(this.state.focus)}
-                onHandleReturn={this.handleReturn}
-                onHandleEdit={this.handleEdit}
-              />
-            )
-        }
-      </div>
+      <ul style={{ listStyle: 'none' }}>
+        <li>{titleRow}</li>
+        {rows}
+      </ul>
     );
   }
 }
