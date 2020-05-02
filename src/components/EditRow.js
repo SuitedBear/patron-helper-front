@@ -33,7 +33,7 @@ function EditRow (props) {
   });
 
   return (
-    <li style={{ padding: '2px 0' }}>
+    <li style={{ padding: '0' }}>
       <form onSubmit={(e) => props.onHandleEdit(e)}>
         {formFields}
         <input type='submit' value='Save' />

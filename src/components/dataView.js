@@ -13,7 +13,6 @@ export class DataView extends React.Component {
     this.props.data.forEach(dataObj => dataMap.set(dataObj.id, dataObj));
     this.state = {
       editFocus: -1,
-      sortedData: this.props.data,
       sortMap: sortMap,
       dataMap: dataMap
     };
@@ -48,7 +47,7 @@ export class DataView extends React.Component {
 
   handleEdit (event) {
     event.preventDefault();
-    console.log(event);
+    console.log(event.target.elements[2].value);
     this.setState({ editFocus: -1 });
   }
 
