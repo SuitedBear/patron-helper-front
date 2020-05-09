@@ -84,10 +84,13 @@ export class DataView extends React.Component {
     }
 
     return (
-      <ul style={{ listStyle: 'none' }}>
-        <li>{titleRow}</li>
-        {rows}
-      </ul>
+      <>
+        <ul style={{ listStyle: 'none' }}>
+          <li>{titleRow}</li>
+          {rows}
+        </ul>
+        <button onClick={() => this.props.onStateChange(0)}>Logout</button>
+      </>
     );
   }
 }
