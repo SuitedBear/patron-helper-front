@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import DataView from './components/DataView';
 import LoginForm from './components/LoginForm';
-import SignupForm from './components/SignupForm';
+import { SignupForm } from './components/SignupForm';
 
 const statuses = ['done', 'for shipment', 'in progress', 'new'];
 
@@ -41,6 +41,8 @@ const mockJson = [
   }
 ];
 
+const serverAddress = 'http://127.0.0.1:3000/';
+
 class App extends React.Component {
   constructor (props) {
     super(props);
@@ -55,6 +57,7 @@ class App extends React.Component {
     };
     this.handleUserState = this.handleUserState.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+    this.handleSignup = this.handleSignup.bind(this);
   }
 
   handlePage (userState) {
@@ -67,7 +70,12 @@ class App extends React.Component {
           />
         );
       case (2):
-        return <SignupForm onStateChange={this.handleUserState} />;
+        return (
+          <SignupForm
+            onStateChange={this.handleUserState}
+            onSignup={this.handleSignup}
+          />
+        );
       default:
         return (
           <LoginForm
@@ -95,7 +103,7 @@ class App extends React.Component {
 
   handleLogin (loginData) {
     console.log(loginData);
-    window.fetch('http://127.0.0.1:3000/login', {
+    window.fetch(`${serverAddress}login`, {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -126,10 +134,35 @@ class App extends React.Component {
       .catch(e => console.log(e));
   }
 
+  handleSignup (signupData) {
+    console.log(signupData);
+    window.fetch(`${serverAddress}signup`, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(signupData)
+    })
+      .then(res => {
+        if (res.status < 400) {
+          return res.json();
+        } else {
+          return 'signup failed';
+        }
+      })
+      .then(data => {
+        console.log(data);
+        this.setState({ userState: 0 });
+        return 'signup successfull';
+      })
+      .catch(e => console.log(e));
+  }
+
   render () {
     return (
       <div id='App'>
-        <div>current state: {this.state.userState}</div>
+        <div>current state: {this.userStates[this.state.userState]}</div>
         {this.handlePage(this.state.userState)}
       </div>
     );
