@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Levels (props) {
+function UserEdit (props) {
   return (
     <div>
-      Levels
+      User Edit
     </div>
   );
 }
 
-export { Levels };
+export { UserEdit };

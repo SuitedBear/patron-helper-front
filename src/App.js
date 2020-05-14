@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.css';
-import DataView from './components/DataView';
+// import DataView from './components/DataView';
 import LoginForm from './components/LoginForm';
 import { SignupForm } from './components/SignupForm';
+import { UserPanel } from './pages/UserPanel';
 
 const statuses = ['done', 'for shipment', 'in progress', 'new'];
 
@@ -64,10 +65,11 @@ class App extends React.Component {
     switch (userState) {
       case (1):
         return (
-          <DataView
-            data={this.state.userData.dataTable}
-            onStateChange={this.handleUserState}
-          />
+          // <DataView
+          //   data={this.state.userData.dataTable}
+          //   onStateChange={this.handleUserState}
+          // />
+          <UserPanel />
         );
       case (2):
         return (
