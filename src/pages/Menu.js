@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function Menu (props) {
   return (
     <nav>
-      <ul>
+      <ul style={{ listStyle: 'none' }}>
         <li>
           <Link to='/'>Services list</Link>
         </li>
@@ -27,10 +27,12 @@ function Menu (props) {
                 </li>
               </>
             )
-            : <li />
+            : <br />
         }
         <li>
-          <Link to='/'>Logout</Link>
+          <Link to='/'>
+            Logout
+          </Link>
         </li>
       </ul>
     </nav>

@@ -1,34 +1,30 @@
 import React from 'react';
 import {
   Switch,
-  Route
+  Route,
+  useParams,
+  useRouteMatch
 } from 'react-router-dom';
 
 import { Levels } from './Levels';
 
-class Service extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      serviceId: this.props.serviceId
-    };
-  }
+function Service (props) {
+  const { serviceId } = useParams();
+  const match = useRouteMatch();
 
-  render () {
-    return (
-      <div>
-        service ID {this.props.serviceId}
-        <Switch>
-          <Route path={`${this.props.match.path}/levels`}>
-            <Levels />
-          </Route>
-          <Route path={this.props.match.path}>
-            <div>Service Info</div>
-          </Route>
-        </Switch>
-      </div>
-    );
-  }
+  return (
+    <div>
+      service ID {serviceId}
+      <Switch>
+        <Route path={`${match.url}/levels`}>
+          <Levels />
+        </Route>
+        <Route path={match.url}>
+          <div>Service Info</div>
+        </Route>
+      </Switch>
+    </div>
+  );
 }
 
 export { Service };

@@ -1,4 +1,9 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom';
+
 import './App.css';
 // import DataView from './components/DataView';
 import LoginForm from './components/LoginForm';
@@ -42,7 +47,7 @@ const mockJson = [
   }
 ];
 
-const serverAddress = 'http://127.0.0.1:3000/';
+const serverAddress = 'http://127.0.0.1:3000';
 
 class App extends React.Component {
   constructor (props) {
@@ -69,7 +74,11 @@ class App extends React.Component {
           //   data={this.state.userData.dataTable}
           //   onStateChange={this.handleUserState}
           // />
-          <UserPanel />
+          <UserPanel
+            serverAddress={serverAddress}
+            onStateChange={this.handleUserState}
+            token={this.state.token}
+          />
         );
       case (2):
         return (
@@ -105,7 +114,7 @@ class App extends React.Component {
 
   handleLogin (loginData) {
     console.log(loginData);
-    window.fetch(`${serverAddress}login`, {
+    window.fetch(`${serverAddress}/login`, {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -138,7 +147,7 @@ class App extends React.Component {
 
   handleSignup (signupData) {
     console.log(signupData);
-    window.fetch(`${serverAddress}signup`, {
+    window.fetch(`${serverAddress}/signup`, {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -163,10 +172,16 @@ class App extends React.Component {
 
   render () {
     return (
-      <div id='App'>
-        <div>current state: {this.userStates[this.state.userState]}</div>
-        {this.handlePage(this.state.userState)}
-      </div>
+      <Router>
+        <div id='App'>
+          <div>
+            current state: {this.userStates[this.state.userState]}
+          </div>
+          <Route path='/'>
+            {this.handlePage(this.state.userState)}
+          </Route>
+        </div>
+      </Router>
     );
   }
 }

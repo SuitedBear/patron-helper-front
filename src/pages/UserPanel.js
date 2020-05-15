@@ -1,21 +1,14 @@
 import React from 'react';
 import {
-  BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  useRouteMatch
 } from 'react-router-dom';
 
 import { Menu } from './Menu';
 import { UserEdit } from './UserEdit';
+import { ServiceList } from './ServiceList';
 import { Service } from './Service';
-
-function ServiceList (props) {
-  return (
-    <div>
-      Service List
-    </div>
-  );
-}
 
 /**
  * @TODO: should have
@@ -23,38 +16,41 @@ function ServiceList (props) {
  *  - some link to todo list
  *  - way to edit logged user data
  *
- *  should recieve token in props
+ *  props: token, onStateChange
  */
-class UserPanel extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      // -1: userEdit, 0: serviceList >=1:serviceId
-      activeService: 0
-    };
-  }
+function UserPanel (props) {
+  const [ServiceId, setServiceId] = React.useState(0);
+  const routeMatch = useRouteMatch('/:sId');
 
-  render () {
-    return (
-      <Router>
-        <>
-          <Menu serviceId={this.state.activeService} />
-          <Switch>
-            <Route path='/user'>
-              <UserEdit />
-            </Route>
-            <Route
-              path='/:serviceId'
-              render={routeProps => <Service {...routeProps} serviceId={this.state.activeService} />}
-            />
-            <Route path='/'>
-              <ServiceList />
-            </Route>
-          </Switch>
-        </>
-      </Router>
-    );
-  }
+  React.useEffect(() => {
+    // double render, also catches /user as param
+    if (routeMatch) {
+      console.log(routeMatch.params.sId);
+      setServiceId(routeMatch.params.sId);
+    }
+  }, [routeMatch]);
+
+  return (
+    <>
+      <Menu
+        serviceId={ServiceId}
+      />
+      <Switch>
+        <Route exact path='/'>
+          <ServiceList
+            serverAddress={props.serverAddress}
+            token={props.token}
+          />
+        </Route>
+        <Route path='/user'>
+          <UserEdit />
+        </Route>
+        <Route path='/:serviceId'>
+          <Service />
+        </Route>
+      </Switch>
+    </>
+  );
 }
 
 export { UserPanel };
