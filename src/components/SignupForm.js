@@ -61,7 +61,7 @@ class SignupForm extends React.Component {
           </label>
           <input type='submit' value='Sign Up' />
         </form>
-        <button onClick={() => this.props.onStateChange(1)}>Login</button>
+        <button onClick={() => this.props.onStateChange(0)}>Login</button>
       </div>
     );
   }

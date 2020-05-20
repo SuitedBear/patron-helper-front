@@ -2,7 +2,7 @@ import React from 'react';
 import { DropDownField, BoolField, TextField, NumberField } from './formFieldTypes';
 
 const statuses = ['done', 'for shipment', 'in progress', 'new'];
-const types = new Map([
+const typesFallback = new Map([
   ['user', TextField],
   ['active', BoolField],
   ['value', NumberField],
@@ -10,6 +10,7 @@ const types = new Map([
 ]);
 
 function EditRow (props) {
+  const types = (props.types || typesFallback);
   const formFields = Object.entries(props.dataPoint).map(entry => {
     const Ele = types.get(entry[0]);
     if (Ele) {

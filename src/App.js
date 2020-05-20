@@ -1,8 +1,4 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Route
-} from 'react-router-dom';
 
 import './App.css';
 // import DataView from './components/DataView';
@@ -10,53 +6,12 @@ import LoginForm from './components/LoginForm';
 import { SignupForm } from './components/SignupForm';
 import { UserPanel } from './pages/UserPanel';
 
-const statuses = ['done', 'for shipment', 'in progress', 'new'];
-
-const mockJson = [
-  {
-    id: 1,
-    user: 'Mietek',
-    mail: 'mietek@ma.maila',
-    active: true,
-    value: 100,
-    status: statuses[0]
-  },
-  {
-    id: 2,
-    user: 'Henio',
-    mail: 'henryk@poczta.kom',
-    active: true,
-    value: 250,
-    status: statuses[3]
-  },
-  {
-    id: 3,
-    user: 'Zenek',
-    mail: 'zenon@ma.w.domu',
-    active: false,
-    value: 200,
-    status: statuses[0]
-  },
-  {
-    id: 4,
-    user: 'Bogumiła',
-    mail: 'bogu@jest.mila',
-    active: true,
-    value: 200,
-    status: statuses[3]
-  }
-];
-
-const serverAddress = 'http://127.0.0.1:3000';
-
 class App extends React.Component {
   constructor (props) {
     super(props);
+    this.serverAddress = props.serverAddress;
     this.userStates = ['logged out', 'logged in', 'signing up'];
     this.state = {
-      userData: {
-        dataTable: mockJson
-      },
       userState: 0,
       token: null,
       failedLogin: false
@@ -70,12 +25,8 @@ class App extends React.Component {
     switch (userState) {
       case (1):
         return (
-          // <DataView
-          //   data={this.state.userData.dataTable}
-          //   onStateChange={this.handleUserState}
-          // />
           <UserPanel
-            serverAddress={serverAddress}
+            serverAddress={this.serverAddress}
             onStateChange={this.handleUserState}
             token={this.state.token}
           />
@@ -114,7 +65,7 @@ class App extends React.Component {
 
   handleLogin (loginData) {
     console.log(loginData);
-    window.fetch(`${serverAddress}/login`, {
+    window.fetch(`${this.serverAddress}/login`, {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -147,7 +98,7 @@ class App extends React.Component {
 
   handleSignup (signupData) {
     console.log(signupData);
-    window.fetch(`${serverAddress}/signup`, {
+    window.fetch(`${this.serverAddress}/signup`, {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -172,16 +123,12 @@ class App extends React.Component {
 
   render () {
     return (
-      <Router>
-        <div id='App'>
-          <div>
-            current state: {this.userStates[this.state.userState]}
-          </div>
-          <Route path='/'>
-            {this.handlePage(this.state.userState)}
-          </Route>
+      <div id='App'>
+        <div>
+          current state: {this.userStates[this.state.userState]}
         </div>
-      </Router>
+        {this.handlePage(this.state.userState)}
+      </div>
     );
   }
 }

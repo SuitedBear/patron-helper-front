@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  Switch,
-  Route,
-  useRouteMatch
-} from 'react-router-dom';
 
-import { Menu } from './Menu';
+import { Menu } from '../components/Menu';
 import { UserEdit } from './UserEdit';
 import { ServiceList } from './ServiceList';
 import { Service } from './Service';
@@ -20,36 +15,39 @@ import { Service } from './Service';
  */
 function UserPanel (props) {
   const [ServiceId, setServiceId] = React.useState(0);
-  const routeMatch = useRouteMatch('/:sId');
-
-  React.useEffect(() => {
-    // double render, also catches /user as param
-    if (routeMatch) {
-      console.log(routeMatch.params.sId);
-      setServiceId(routeMatch.params.sId);
-    }
-  }, [routeMatch]);
+  const [subService, setSubService] = React.useState(0);
 
   return (
-    <>
+    <div>
       <Menu
         serviceId={ServiceId}
+        setServiceId={setServiceId}
+        setSubService={setSubService}
+        onLogout={props.onStateChange}
       />
-      <Switch>
-        <Route exact path='/'>
-          <ServiceList
-            serverAddress={props.serverAddress}
-            token={props.token}
-          />
-        </Route>
-        <Route path='/user'>
-          <UserEdit />
-        </Route>
-        <Route path='/:serviceId'>
-          <Service />
-        </Route>
-      </Switch>
-    </>
+      {
+        (ServiceId > 0)
+          ? (
+            <Service
+              serviceId={ServiceId}
+              subService={subService}
+              serverAddress={props.serverAddress}
+              token={props.token}
+            />
+          )
+          : (ServiceId === -1)
+            ? (
+              <UserEdit />
+            )
+            : (
+              <ServiceList
+                serverAddress={props.serverAddress}
+                token={props.token}
+                setServiceId={setServiceId}
+              />
+            )
+      }
+    </div>
   );
 }
 
