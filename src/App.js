@@ -2,9 +2,9 @@ import React from 'react';
 
 import './App.css';
 // import DataView from './components/DataView';
-import LoginForm from './components/LoginForm';
-import { SignupForm } from './components/SignupForm';
-import { UserPanel } from './pages/userPanel';
+import LoginForm from 'components/LoginForm';
+import { SignupForm } from 'components/SignupForm';
+import { UserPanel } from 'pages/userPanel';
 
 class App extends React.Component {
   constructor (props) {

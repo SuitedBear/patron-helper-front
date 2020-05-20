@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DataView from '../components/tables/DataView';
+import DataView from 'components/tables/DataView';
 
 function Todos (props) {
   const [todoList, setTodoList] = React.useState(null);

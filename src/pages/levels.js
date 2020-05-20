@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DataView from '../components/tables/DataView';
+import DataView from 'components/tables/DataView';
 
 /** @props: serviceId, token, serverAddress */
 

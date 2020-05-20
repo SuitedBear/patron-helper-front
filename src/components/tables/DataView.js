@@ -1,6 +1,6 @@
 import React from 'react';
-import DataRow from './DataRow';
-import EditRow from './EditRow';
+import DataRow from 'components/tables/DataRow';
+import EditRow from 'components/tables/EditRow';
 
 export class DataView extends React.Component {
   constructor (props) {
