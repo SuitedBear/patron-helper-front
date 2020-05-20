@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { Menu } from '../components/Menu';
-import { UserEdit } from '../pages/UserEdit';
-import { ServiceList } from '../pages/ServiceList';
-import { Service } from '../pages/service';
+import { UserEdit } from './UserEdit';
+import { ServiceList } from './ServiceList';
+import { Service } from './service';
 
 /**
  * @TODO: should have
