@@ -1,8 +1,8 @@
 import React from 'react';
-import DataRow from 'components/tables/DataRow';
-import EditRow from 'components/tables/EditRow';
+import { DataRow } from './dataRow';
+import { EditRow } from './editRow';
 
-export class DataView extends React.Component {
+class DataView extends React.Component {
   constructor (props) {
     super(props);
     const sortMap = new Map();
@@ -96,4 +96,4 @@ export class DataView extends React.Component {
   }
 }
 
-export default DataView;
+export { DataView };
