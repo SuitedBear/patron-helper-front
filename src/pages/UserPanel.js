@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Menu } from '../components/Menu';
-import { UserEdit } from './UserEdit';
-import { ServiceList } from './ServiceList';
+import { Menu } from '../components/menu';
+import { UserEdit } from './userEdit';
+import { ServiceList } from './serviceList';
 import { Service } from './service';
 
 /**

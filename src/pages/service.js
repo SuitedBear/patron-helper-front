@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Levels } from './Levels';
-import { Patrons } from './Patrons';
+import { Levels } from './levels';
+import { Patrons } from './patrons';
 import { Todos } from './todos';
 
 function Service (props) {
