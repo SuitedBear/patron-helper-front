@@ -11,6 +11,7 @@ export class DataView extends React.Component {
     }
     const dataMap = new Map();
     this.props.data.forEach(dataObj => dataMap.set(dataObj.id, dataObj));
+    this.types = (this.props.types || null);
     this.state = {
       editFocus: -1,
       sortMap: sortMap,
@@ -71,6 +72,7 @@ export class DataView extends React.Component {
             key={entry[0]}
             dataPoint={dataMap.get(editFocus)}
             onHandleEdit={this.handleEdit}
+            types={this.types}
           />
         )
         : rows.push(
@@ -89,7 +91,6 @@ export class DataView extends React.Component {
           <li>{titleRow}</li>
           {rows}
         </ul>
-        <button onClick={() => this.props.onStateChange(0)}>Logout</button>
       </>
     );
   }

@@ -5,7 +5,11 @@ import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App
+      serverAddress={
+        (process.env.SERV_URI || 'http://127.0.0.1:3000')
+      }
+    />
   </React.StrictMode>,
   document.getElementById('root')
 );

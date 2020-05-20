@@ -1,7 +1,4 @@
 import React from 'react';
-import {
-  Link
-} from 'react-router-dom';
 
 function ServiceList (props) {
   const [serviceList, updateServiceList] = React.useState([]);
@@ -20,10 +17,11 @@ function ServiceList (props) {
         const serviceDataParsed = await serviceData.json();
         serviceList = serviceDataParsed.map(service => {
           return (
-            <li key={service.id}>
-              <Link to={`/${service.id}`}>
-                {service.name}
-              </Link>
+            <li
+              key={service.id}
+              onClick={() => props.setServiceId(service.id)}
+            >
+              {service.name}
             </li>
           );
         });
