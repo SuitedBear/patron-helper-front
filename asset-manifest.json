@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/patron-helper-front/static/css/main.1fc48b3f.chunk.css",
+    "main.js": "/patron-helper-front/static/js/main.73b1c3ed.chunk.js",
+    "main.js.map": "/patron-helper-front/static/js/main.73b1c3ed.chunk.js.map",
+    "runtime-main.js": "/patron-helper-front/static/js/runtime-main.5437f583.js",
+    "runtime-main.js.map": "/patron-helper-front/static/js/runtime-main.5437f583.js.map",
+    "static/js/2.f2c2d0a3.chunk.js": "/patron-helper-front/static/js/2.f2c2d0a3.chunk.js",
+    "static/js/2.f2c2d0a3.chunk.js.map": "/patron-helper-front/static/js/2.f2c2d0a3.chunk.js.map",
+    "index.html": "/patron-helper-front/index.html",
+    "precache-manifest.e7575f36bfefd8fdcdcbc682c19ef7cc.js": "/patron-helper-front/precache-manifest.e7575f36bfefd8fdcdcbc682c19ef7cc.js",
+    "service-worker.js": "/patron-helper-front/service-worker.js",
+    "static/css/main.1fc48b3f.chunk.css.map": "/patron-helper-front/static/css/main.1fc48b3f.chunk.css.map",
+    "static/js/2.f2c2d0a3.chunk.js.LICENSE.txt": "/patron-helper-front/static/js/2.f2c2d0a3.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.5437f583.js",
+    "static/js/2.f2c2d0a3.chunk.js",
+    "static/css/main.1fc48b3f.chunk.css",
+    "static/js/main.73b1c3ed.chunk.js"
+  ]
+}
