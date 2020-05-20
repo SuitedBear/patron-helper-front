@@ -1,10 +1,10 @@
 import React from 'react';
 
-import './App.css';
+import './app.css';
 // import DataView from './components/DataView';
-import LoginForm from 'components/LoginForm';
-import { SignupForm } from 'components/SignupForm';
-import { UserPanel } from 'pages/userPanel';
+import { LoginForm } from './components/loginForm';
+import { SignupForm } from './components/signupForm';
+import { UserPanel } from './pages/userPanel';
 
 class App extends React.Component {
   constructor (props) {
@@ -133,4 +133,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export { App };

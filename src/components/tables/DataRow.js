@@ -21,4 +21,4 @@ function DataRow (props) {
   );
 }
 
-export default DataRow;
+export { DataRow };

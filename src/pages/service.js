@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Levels } from 'pages/levels';
-import { Patrons } from 'pages/patrons';
-import { Todos } from 'pages/todos';
+import { Levels } from './levels';
+import { Patrons } from './patrons';
+import { Todos } from './todos';
 
 function Service (props) {
   const [subServiceComponent, setComponent] =
