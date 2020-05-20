@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import DataView from '../components/tables/DataView';
+import { DataView } from '../components/tables/dataView';
 
 const mockJson = [
   {
