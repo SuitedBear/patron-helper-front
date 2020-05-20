@@ -1,5 +1,6 @@
 import React from 'react';
-import { DropDownField, BoolField, TextField, NumberField } from './formFieldTypes';
+import { DropDownField, BoolField, TextField, NumberField }
+  from '../../components/tables/formFieldTypes';
 
 const statuses = ['done', 'for shipment', 'in progress', 'new'];
 const typesFallback = new Map([
