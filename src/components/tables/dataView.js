@@ -1,4 +1,5 @@
 import React from 'react';
+import './dataView.css';
 import { DataRow } from './dataRow';
 import { EditRow } from './editRow';
 
@@ -46,22 +47,24 @@ class DataView extends React.Component {
     this.setState({ editFocus: dataObj.id });
   }
 
-  handleEdit (event) {
-    event.preventDefault();
-    console.log(event.target.elements[2].value);
-    this.setState({ editFocus: -1 });
+  handleEdit (data) {
+    console.log(data);
+    const newDataMap = new Map(this.state.dataMap);
+    newDataMap.set(this.state.editFocus, data);
+    this.setState({ editFocus: -1, dataMap: newDataMap });
   }
 
   render () {
     const { dataMap, sortMap, editFocus } = this.state;
     const keys = Array.from(sortMap.keys());
     const titleRow = keys.map(key => (
-      <button
+      <div
+        className='data-header-cell'
         key={key}
         onClick={() => this.handleSort(key)}
       >
         {key}
-      </button>
+      </div>
     ));
 
     const rows = [];
@@ -87,10 +90,12 @@ class DataView extends React.Component {
 
     return (
       <>
-        <ul style={{ listStyle: 'none' }}>
-          <li>{titleRow}</li>
+        <div className='data-table'>
+          <div className='data-row'>
+            {titleRow}
+          </div>
           {rows}
-        </ul>
+        </div>
       </>
     );
   }

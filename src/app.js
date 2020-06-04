@@ -64,7 +64,6 @@ class App extends React.Component {
   }
 
   handleLogin (loginData) {
-    console.log(loginData);
     window.fetch(`${this.serverAddress}/login`, {
       method: 'POST',
       mode: 'cors',
@@ -97,7 +96,6 @@ class App extends React.Component {
   }
 
   handleSignup (signupData) {
-    console.log(signupData);
     window.fetch(`${this.serverAddress}/signup`, {
       method: 'POST',
       mode: 'cors',

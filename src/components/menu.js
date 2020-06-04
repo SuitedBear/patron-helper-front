@@ -2,7 +2,7 @@ import React from 'react';
 
 function Menu (props) {
   return (
-    <nav>
+    <nav className='menu'>
       <ul style={{ listStyle: 'none' }}>
         <li onClick={() => props.setServiceId(0)}>
           Services list

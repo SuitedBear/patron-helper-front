@@ -10,38 +10,60 @@ const typesFallback = new Map([
   ['status', DropDownField]
 ]);
 
-function EditRow (props) {
-  const types = (props.types || typesFallback);
-  const formFields = Object.entries(props.dataPoint).map(entry => {
-    const Ele = types.get(entry[0]);
-    if (Ele) {
-      return (
-        <Ele
-          key={entry[0]}
-          entry={entry}
-          optionList={statuses}
-        />
-      );
-    } else {
-      return (
-        <span
-          key={entry[0]}
-          style={{ border: '1px solid black', padding: '1px' }}
-        >
-          {entry[1]}
-        </span>
-      );
-    }
-  });
+class EditRow extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      formData: { ...props.dataPoint }
+    };
+    this.types = (props.types || typesFallback);
 
-  return (
-    <li style={{ padding: '0' }}>
-      <form onSubmit={(e) => props.onHandleEdit(e)}>
+    this.changeHandler = this.changeHandler.bind(this);
+  }
+
+  changeHandler (e) {
+    console.log(`id:${e.target.id} val:${e.target.value}`);
+    const newFormData = this.state.formData;
+    newFormData[e.target.id] = e.target.value;
+    this.setState({ formData: newFormData });
+  }
+
+  handleSubmit (e) {
+    e.preventDefault();
+    this.props.onHandleEdit(this.state.formData);
+  }
+
+  render () {
+    const formFields = Object.entries(this.state.formData).map(entry => {
+      const Ele = this.types.get(entry[0]);
+      if (Ele) {
+        return (
+          <Ele
+            key={entry[0]}
+            entry={entry}
+            optionList={this.props.options || statuses}
+            handleChange={this.changeHandler}
+          />
+        );
+      } else {
+        return (
+          <div
+            className='data-cell'
+            key={entry[0]}
+          >
+            {entry[1]}
+          </div>
+        );
+      }
+    });
+
+    return (
+      <form onSubmit={(e) => this.handleSubmit(e)} className='data-row'>
         {formFields}
-        <input type='submit' value='Save' />
+        <input type='submit' value='Save' className='data-cell' />
       </form>
-    </li>
-  );
+    );
+  }
 }
 
 export { EditRow };

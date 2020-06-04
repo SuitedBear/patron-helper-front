@@ -1,0 +1,37 @@
+.data-table {
+  display: table;
+  margin: 15px;
+  border-collapse: collapse;
+  border: 1px solid #666;
+  border-bottom: 2px solid #333;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.10),
+    0px 5px 10px rgba(0,0,0,0.05),
+    0px 10px 10px rgba(0,0,0,0.05),
+    0px 15px 10px rgba(0,0,0,0.05);
+}
+
+.data-row {
+  display: table-row;
+}
+
+.data-header-cell {
+  display: table-cell;
+  border: 1px solid #666;
+  padding: 5px;
+  border-collapse: collapse;
+  background: #333;
+  color: #eee;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.data-header-cell.last {
+  border-right: none;
+}
+
+.data-cell {
+  display: table-cell;
+  border: 1px solid #666;
+  padding: 5px;
+  border-collapse: collapse;
+}

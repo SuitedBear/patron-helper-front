@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 function DropDownField (props) {
   const options = props.optionList.map(element => {
@@ -13,11 +13,13 @@ function DropDownField (props) {
   });
 
   return (
-    <span style={{ border: '1px solid black', padding: '1px' }}>
+    // <span style={{ border: '1px solid black', padding: '1px' }}>
+    <span className='data-cell'>
       <select
         id={props.entry[0]}
         name={props.entry[0]}
         defaultValue={props.entry[1]}
+        onChange={e => props.handleChange(e)}
       >
         {options}
       </select>
@@ -27,28 +29,28 @@ function DropDownField (props) {
 
 function BoolField (props) {
   return (
-    <span style={{ border: '1px solid black', padding: '1px' }}>
+    <span className='data-cell'>
       <input
         type='checkbox'
         id={props.entry[0]}
         name={props.entry[0]}
-        defaultChecked={(props.entry[1] === 'true')}
+        // data needs parsing on state
+        checked={props.entry[1]}
+        onChange={(e) => props.handleChange(e)}
       />
     </span>
   );
 }
 
 function TextField (props) {
-  const [value, setValue] = useState(props.entry[1]);
-
   return (
-    <span style={{ border: '1px solid black', padding: '1px' }}>
+    <span className='data-cell'>
       <input
         id={props.entry[0]}
         name={props.entry[0]}
         size={16}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={props.entry[1] || ''}
+        onChange={(e) => props.handleChange(e)}
       />
     </span>
   );
@@ -56,13 +58,14 @@ function TextField (props) {
 
 function NumberField (props) {
   return (
-    <span style={{ border: '1px solid black', padding: '1px' }}>
+    <span className='data-cell'>
       <input
         id={props.entry[0]}
         name={props.entry[0]}
         type='number'
         min={0}
-        defaultValue={props.entry[1]}
+        value={props.entry[1]}
+        onChange={(e) => props.handleChange(e)}
       />
     </span>
   );
@@ -74,3 +77,29 @@ export {
   TextField,
   NumberField
 };
+
+// {
+//   "id": 31,
+//   "status": null,
+//   "levelId": 1,
+//   "rewardId": 15,
+//   "patronId": 6,
+//   "createdAt": "2020-05-10T12:08:20.456Z",
+//   "updatedAt": "2020-05-10T12:08:20.456Z",
+//   "patronInService": {
+//       "patronId": 1,
+//       "notes": null,
+//       "active": true,
+//       "supportAmount": 100,
+//       "patron": {
+//           "name": "mietek",
+//           "email": "mietek@maila.ma"
+//       }
+//   },
+//   "reward": {
+//       "name": "DoIthemAllAtOnceMonthly for mietek from 2020-5"
+//   },
+//   "level": {
+//       "serviceId": 1
+//   }
+// }

@@ -4,20 +4,20 @@ function DataRow (props) {
   const row = [];
   for (const colName of props.keys) {
     row.push(
-      <span
-        style={{ border: '1px solid black', padding: '1px' }}
+      <div
+        className='data-cell'
         key={colName}
         onDoubleClick={(e) => props.onRowClick(e, props.data)}
       >
         {`${props.data[colName]}`}
-      </span>
+      </div>
     );
   }
 
   return (
-    <li style={{ padding: '2px 0' }}>
+    <div className='data-row'>
       {row}
-    </li>
+    </div>
   );
 }
 

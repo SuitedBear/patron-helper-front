@@ -18,7 +18,7 @@ function UserPanel (props) {
   const [subService, setSubService] = React.useState(0);
 
   return (
-    <div>
+    <div className='user-panel'>
       <Menu
         serviceId={ServiceId}
         setServiceId={setServiceId}

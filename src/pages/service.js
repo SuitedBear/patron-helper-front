@@ -47,7 +47,7 @@ function Service (props) {
 
   return (
     <div>
-      service ID {props.serviceId}
+      <span style={{ margin: '15px' }}>service ID {props.serviceId}</span>
       {subServiceComponent}
     </div>
   );

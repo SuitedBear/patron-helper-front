@@ -7,7 +7,7 @@ ReactDOM.render(
   <React.StrictMode>
     <App
       serverAddress={
-        (process.env.SERV_URI || 'http://127.0.0.1:3000')
+        (process.env.REACT_APP_SERVER_URI || 'https://patron-helper-test-back.herokuapp.com')
       }
     />
   </React.StrictMode>,
