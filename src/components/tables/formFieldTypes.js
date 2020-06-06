@@ -13,7 +13,6 @@ function DropDownField (props) {
   });
 
   return (
-    // <span style={{ border: '1px solid black', padding: '1px' }}>
     <span className='data-cell'>
       <select
         id={props.entry[0]}
@@ -71,35 +70,23 @@ function NumberField (props) {
   );
 }
 
+function getValue (target, field) {
+  let setValue = null;
+  switch (field) {
+    case (BoolField):
+      setValue = target.checked;
+      break;
+    default:
+      setValue = target.value;
+  }
+  console.log(setValue);
+  return setValue;
+}
+
 export {
   DropDownField,
   BoolField,
   TextField,
-  NumberField
+  NumberField,
+  getValue
 };
-
-// {
-//   "id": 31,
-//   "status": null,
-//   "levelId": 1,
-//   "rewardId": 15,
-//   "patronId": 6,
-//   "createdAt": "2020-05-10T12:08:20.456Z",
-//   "updatedAt": "2020-05-10T12:08:20.456Z",
-//   "patronInService": {
-//       "patronId": 1,
-//       "notes": null,
-//       "active": true,
-//       "supportAmount": 100,
-//       "patron": {
-//           "name": "mietek",
-//           "email": "mietek@maila.ma"
-//       }
-//   },
-//   "reward": {
-//       "name": "DoIthemAllAtOnceMonthly for mietek from 2020-5"
-//   },
-//   "level": {
-//       "serviceId": 1
-//   }
-// }

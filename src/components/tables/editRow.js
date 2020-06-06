@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropDownField, BoolField, TextField, NumberField }
+import { DropDownField, BoolField, TextField, NumberField, getValue }
   from './formFieldTypes';
 
 const statuses = ['done', 'for shipment', 'in progress', 'new'];
@@ -22,9 +22,9 @@ class EditRow extends React.Component {
   }
 
   changeHandler (e) {
-    console.log(`id:${e.target.id} val:${e.target.value}`);
+    // console.log(`id:${e.target.id} val:${e.target.value}`);
     const newFormData = this.state.formData;
-    newFormData[e.target.id] = e.target.value;
+    newFormData[e.target.id] = getValue(e.target, this.types.get(e.target.id));
     this.setState({ formData: newFormData });
   }
 
@@ -58,9 +58,15 @@ class EditRow extends React.Component {
     });
 
     return (
-      <form onSubmit={(e) => this.handleSubmit(e)} className='data-row'>
+      <form
+        onSubmit={(e) => this.handleSubmit(e)}
+        className='data-row'
+        onBlur={(e) => {
+          if (e.relatedTarget === null) this.handleSubmit(e);
+        }}
+      >
         {formFields}
-        <input type='submit' value='Save' className='data-cell' />
+        {/* <input type='submit' value='Save' className='data-cell' /> */}
       </form>
     );
   }
