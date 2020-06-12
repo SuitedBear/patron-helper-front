@@ -2,15 +2,21 @@ import React from 'react';
 
 import { DataView } from '../components/tables/dataView';
 import { DropDownField, TextField } from '../components/tables/formFieldTypes';
-import { flattener } from '../utils/flattener';
 
 function Todos (props) {
   const [todoList, setTodoList] = React.useState(null);
-  // eslint-disable-next-line
-  const [todoData, setTodoData] = React.useState(null);
+  const todoColumns = new Map([
+    ['id', 'id'],
+    ['updatedAt', 'ostatnia zmiana'],
+    ['patronInService.patron.name', 'patron'],
+    ['patronInService.patron.email', 'email'],
+    ['reward.name', 'nagroda'],
+    ['patronInService.notes', 'notatki'],
+    ['status', 'status']
+  ]);
   const todoMap = new Map([
     ['status', DropDownField],
-    ['notes', TextField],
+    ['patronInService.notes', TextField],
     ['reward', TextField]
   ]);
 
@@ -26,10 +32,7 @@ function Todos (props) {
       );
       if (recievedData.ok) {
         const todoDataParsed = await recievedData.json();
-        setTodoData(todoDataParsed);
-        const newTodoList = todoDataParsed.map(pos => flattener(pos));
-        console.log(newTodoList);
-        setTodoList(newTodoList);
+        setTodoList(todoDataParsed);
       }
     }
     getTodoList();
@@ -43,6 +46,7 @@ function Todos (props) {
             <DataView
               data={todoList}
               types={todoMap}
+              columns={todoColumns}
             />
           )
           : (<div>Loading Patron List...</div>)

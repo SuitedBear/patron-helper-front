@@ -4,12 +4,29 @@ import { Levels } from './levels';
 import { Patrons } from './patrons';
 import { Todos } from './todos';
 
+// TODO: add csv import button
 function Service (props) {
   const [subServiceComponent, setComponent] =
     React.useState(<p>Service not loaded</p>);
+  const [loadingState, setLoadingState] = React.useState('Generate Todos');
 
   React.useLayoutEffect(() => {
-    console.log('Service Layout Effect fired');
+    async function handleGenerate (e) {
+      setLoadingState('Generating...');
+      const res = await window.fetch(
+        `${props.serverAddress}/services/${props.serviceId}/generate`, {
+          mode: 'cors',
+          headers: {
+            Authorization: `Bearer ${props.token}`
+          }
+        }
+      );
+      if (res.ok) {
+        setLoadingState('Generate Todos');
+        console.log('generate successfull');
+      }
+    }
+
     switch (props.subService) {
       case (1):
         setComponent(
@@ -40,10 +57,13 @@ function Service (props) {
         break;
       default:
         setComponent(
-          <div>Service Main</div>
+          <div>
+            <div>Service Main</div>
+            <button onClick={(e) => handleGenerate(e)}>{loadingState}</button>
+          </div>
         );
     }
-  }, [props]);
+  }, [props, loadingState]);
 
   return (
     <div>

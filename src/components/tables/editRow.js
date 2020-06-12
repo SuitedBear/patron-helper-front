@@ -14,7 +14,7 @@ class EditRow extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      formData: { ...props.dataPoint }
+      formData: props.dataPoint
     };
     this.types = (props.types || typesFallback);
 
@@ -34,13 +34,14 @@ class EditRow extends React.Component {
   }
 
   render () {
-    const formFields = Object.entries(this.state.formData).map(entry => {
-      const Ele = this.types.get(entry[0]);
+    const formFields = this.props.keys.map(key => {
+      const entry = this.state.formData[key];
+      const Ele = this.types.get(key);
       if (Ele) {
         return (
           <Ele
-            key={entry[0]}
-            entry={entry}
+            key={key}
+            entry={[key, entry]}
             optionList={this.props.options || statuses}
             handleChange={this.changeHandler}
           />
@@ -49,9 +50,9 @@ class EditRow extends React.Component {
         return (
           <div
             className='data-cell'
-            key={entry[0]}
+            key={key}
           >
-            {entry[1]}
+            {entry}
           </div>
         );
       }

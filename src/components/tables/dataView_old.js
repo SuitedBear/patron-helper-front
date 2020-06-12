@@ -2,62 +2,42 @@ import React from 'react';
 import './dataView.css';
 import { DataRow } from './dataRow';
 import { EditRow } from './editRow';
-import { Filters } from './filters';
 
 class DataView extends React.Component {
   constructor (props) {
     super(props);
     const sortMap = new Map();
-    for (const [name, columnName] of props.columns.entries()) {
-      // name: [column name, show, sort (true == asc)]
-      sortMap.set(name, [columnName, true, true]);
+    for (const key of Object.keys(this.props.data[0])) {
+      sortMap.set(key, true);
     }
     const dataMap = new Map();
-    this.props.data.forEach(dataObj => {
-      const newObj = {};
-      for (const entry of Object.entries(dataObj)) {
-        if (sortMap.has(entry[0])) {
-          newObj[entry[0]] = entry[1];
-        }
-      }
-      dataMap.set(dataObj.id, newObj);
-    });
+    this.props.data.forEach(dataObj => dataMap.set(dataObj.id, dataObj));
     this.types = (this.props.types || null);
     this.state = {
       editFocus: -1,
       sortMap: sortMap,
       dataMap: dataMap
     };
-    this.handleFilter = this.handleFilter.bind(this);
-    this.handleEdit = this.handleEdit.bind(this);
+    this.handleSort = this.handleSort.bind(this);
     this.handleDataRow = this.handleDataRow.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
   handleSort (key) {
     const sortMap = new Map(this.state.sortMap);
-    const sortKey = sortMap.get(key);
     const table = [...this.state.dataMap.values()].sort((a, b) => {
       if (a[key] === b[key]) return 0;
-      return (sortKey[2])
+      return (sortMap.get(key))
         ? (a[key] > b[key]) ? 1 : -1
         : (a[key] < b[key]) ? 1 : -1;
     });
     const dataMap = new Map();
     table.forEach(dataObj => dataMap.set(dataObj.id, dataObj));
-    sortKey[2] = !sortKey[2];
-    sortMap.set(key, sortKey);
+    sortMap.set(key, !sortMap.get(key));
     this.setState({
       dataMap: dataMap,
       sortMap: sortMap
     });
-  }
-
-  handleFilter (name) {
-    const newFilterMap = new Map(this.state.sortMap);
-    const changedFilter = newFilterMap.get(name);
-    changedFilter[1] = !changedFilter[1];
-    newFilterMap.set(name, changedFilter);
-    this.setState({ sortMap: newFilterMap });
   }
 
   handleDataRow (event, dataObj) {
@@ -76,15 +56,14 @@ class DataView extends React.Component {
 
   render () {
     const { dataMap, sortMap, editFocus } = this.state;
-    const keys = Array.from(sortMap.keys())
-      .filter(key => sortMap.get(key)[1]);
+    const keys = Array.from(sortMap.keys());
     const titleRow = keys.map(key => (
       <div
         className='data-header-cell'
         key={key}
         onClick={() => this.handleSort(key)}
       >
-        {sortMap.get(key)[0]}
+        {key}
       </div>
     ));
 
@@ -94,8 +73,7 @@ class DataView extends React.Component {
         ? rows.push(
           <EditRow
             key={entry[0]}
-            dataPoint={entry[1]}
-            keys={keys}
+            dataPoint={dataMap.get(editFocus)}
             onHandleEdit={this.handleEdit}
             types={this.types}
           />
@@ -112,12 +90,6 @@ class DataView extends React.Component {
 
     return (
       <>
-        <div>
-          <Filters
-            filterMap={this.state.sortMap}
-            onFilterChange={this.handleFilter}
-          />
-        </div>
         <div className='data-table'>
           <div className='data-row'>
             {titleRow}

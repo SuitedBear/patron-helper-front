@@ -25,7 +25,7 @@
   cursor: pointer;
 }
 
-.data-header-cell.last {
+.data-header-cell:last-of-type {
   border-right: none;
 }
 
@@ -34,4 +34,17 @@
   border: 1px solid #666;
   padding: 5px;
   border-collapse: collapse;
+}
+
+.filter-check {
+  display: inline-block;
+  padding: 5px;
+  margin: 5px 2px 0 0;
+  border: 1px solid #666;
+  background: #333;
+  color: #eee;
+}
+
+.filter-check:first-of-type {
+  margin-left: 10px;
 }

@@ -1,17 +1,23 @@
 import React from 'react';
 
 import { DataView } from '../components/tables/dataView';
-import { flattener } from '../utils/flattener';
 import { BoolField, TextField } from '../components/tables/formFieldTypes';
 
 function Patrons (props) {
   const [patronList, setPatronList] = React.useState(null);
-  // eslint-disable-next-line
-  const [patronData, setPatronData] = React.useState(null);
+  const patronColumns = new Map([
+    ['id', 'id'],
+    ['patron.name', 'nazwa'],
+    ['patron.email', 'email'],
+    ['active', 'aktywny'],
+    ['supportAmount', 'kwota wsparcia'],
+    ['notes', 'uwagi'],
+    ['updatedAt', 'ostatnia zmiana']
+  ]);
   const patronMap = new Map([
     ['active', BoolField],
     ['notes', TextField],
-    ['name', TextField]
+    ['patron.name', TextField]
   ]);
 
   React.useEffect(() => {
@@ -26,9 +32,7 @@ function Patrons (props) {
       );
       if (patronDataRaw.ok) {
         const patronDataParsed = await patronDataRaw.json();
-        setPatronData(patronDataParsed);
-        const patronDataFlatten = patronDataParsed.map(pos => flattener(pos));
-        setPatronList(patronDataFlatten);
+        setPatronList(patronDataParsed);
       }
     }
     getPatronList();
@@ -42,6 +46,7 @@ function Patrons (props) {
             <DataView
               data={patronList}
               types={patronMap}
+              columns={patronColumns}
             />
           )
           : (<div>Loading Patron List...</div>)
