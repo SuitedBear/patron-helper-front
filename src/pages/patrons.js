@@ -38,6 +38,11 @@ function Patrons (props) {
     getPatronList();
   }, [props]);
 
+  function handleSaveChanges (data) {
+    console.log(data);
+    console.log(patronList);
+  }
+
   return (
     <div>
       {
@@ -47,6 +52,7 @@ function Patrons (props) {
               data={patronList}
               types={patronMap}
               columns={patronColumns}
+              onSaveChanges={handleSaveChanges}
             />
           )
           : (<div>Loading Patron List...</div>)

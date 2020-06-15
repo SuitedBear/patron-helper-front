@@ -3,7 +3,11 @@ import './dataView.css';
 import { DataRow } from './dataRow';
 import { EditRow } from './editRow';
 import { Filters } from './filters';
+import { flattener } from '../../utils/flattener';
 
+/*
+  props: data, types, columns, onSaveChanges()
+*/
 class DataView extends React.Component {
   constructor (props) {
     super(props);
@@ -13,7 +17,8 @@ class DataView extends React.Component {
       sortMap.set(name, [columnName, true, true]);
     }
     const dataMap = new Map();
-    this.props.data.forEach(dataObj => {
+    const flattenedData = this.props.data.map(pos => flattener(pos));
+    flattenedData.forEach(dataObj => {
       const newObj = {};
       for (const entry of Object.entries(dataObj)) {
         if (sortMap.has(entry[0])) {
@@ -26,11 +31,13 @@ class DataView extends React.Component {
     this.state = {
       editFocus: -1,
       sortMap: sortMap,
-      dataMap: dataMap
+      dataMap: dataMap,
+      unsavedChanges: false
     };
     this.handleFilter = this.handleFilter.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDataRow = this.handleDataRow.bind(this);
+    this.handleSave = this.handleSave.bind(this);
   }
 
   handleSort (key) {
@@ -71,7 +78,16 @@ class DataView extends React.Component {
     console.log(data);
     const newDataMap = new Map(this.state.dataMap);
     newDataMap.set(this.state.editFocus, data);
-    this.setState({ editFocus: -1, dataMap: newDataMap });
+    this.setState({
+      editFocus: -1,
+      dataMap: newDataMap,
+      unsavedChanges: true
+    });
+  }
+
+  handleSave () {
+    this.props.onSaveChanges(this.state.dataMap);
+    this.setState({ unsavedChanges: false });
   }
 
   render () {
@@ -112,6 +128,14 @@ class DataView extends React.Component {
 
     return (
       <>
+        <div>
+          <button
+            onClick={this.handleSave}
+            className='filter-check'
+          >
+            Save
+          </button>
+        </div>
         <div>
           <Filters
             filterMap={this.state.sortMap}

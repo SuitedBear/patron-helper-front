@@ -29,6 +29,10 @@
   border-right: none;
 }
 
+.data-header-cell:hover {
+  background: #555;
+}
+
 .data-cell {
   display: table-cell;
   border: 1px solid #666;
@@ -43,6 +47,10 @@
   border: 1px solid #666;
   background: #333;
   color: #eee;
+}
+
+.filter-check:hover {
+  background: #555;
 }
 
 .filter-check:first-of-type {

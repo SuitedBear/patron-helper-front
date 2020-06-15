@@ -38,6 +38,28 @@ function Todos (props) {
     getTodoList();
   }, [props]);
 
+  function handleSaveChanges (data) {
+    console.log(data);
+    console.log(todoList);
+    const newTodoList = [];
+    for (const pos of todoList) {
+      const posCopy = { ...pos };
+      const newPos = data.get(posCopy.id);
+      if (newPos) {
+        for (const [newKey, val] of Object.entries(newPos)) {
+          let reference = posCopy;
+          const keyArr = newKey.split('.');
+          while (keyArr.length > 1) {
+            reference = reference[keyArr.shift()];
+          }
+          reference[keyArr[0]] = val;
+        }
+      }
+      newTodoList.push(posCopy);
+    }
+    console.log(newTodoList);
+  }
+
   return (
     <div>
       {
@@ -47,6 +69,7 @@ function Todos (props) {
               data={todoList}
               types={todoMap}
               columns={todoColumns}
+              onSaveChanges={handleSaveChanges}
             />
           )
           : (<div>Loading Patron List...</div>)
