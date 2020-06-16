@@ -14,4 +14,16 @@ const flattener = (item) => {
   return flattenedItem;
 };
 
-export { flattener };
+const duplicator = (item, depth = 0) => {
+  // return reference instead to avoid stack overflowing
+  if (depth > 3) return item;
+  const newItem = {};
+  for (const [key, val] of Object.entries(item)) {
+    newItem[key] = (val && (typeof val === 'object'))
+      ? duplicator(val, ++depth)
+      : val;
+  }
+  return newItem;
+};
+
+export { flattener, duplicator };

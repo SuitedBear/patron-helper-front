@@ -22,7 +22,6 @@ class EditRow extends React.Component {
   }
 
   changeHandler (e) {
-    // console.log(`id:${e.target.id} val:${e.target.value}`);
     const newFormData = this.state.formData;
     newFormData[e.target.id] = getValue(e.target, this.types.get(e.target.id));
     this.setState({ formData: newFormData });

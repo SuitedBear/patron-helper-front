@@ -2,6 +2,7 @@ import React from 'react';
 
 import { DataView } from '../components/tables/dataView';
 import { DropDownField, TextField } from '../components/tables/formFieldTypes';
+import { duplicator } from '../utils/flattener';
 
 function Todos (props) {
   const [todoList, setTodoList] = React.useState(null);
@@ -39,14 +40,12 @@ function Todos (props) {
   }, [props]);
 
   function handleSaveChanges (data) {
-    console.log(data);
-    console.log(todoList);
     const newTodoList = [];
     for (const pos of todoList) {
-      const posCopy = { ...pos };
-      const newPos = data.get(posCopy.id);
-      if (newPos) {
-        for (const [newKey, val] of Object.entries(newPos)) {
+      const posCopy = duplicator(pos);
+      const changedData = data.get(posCopy.id);
+      if (changedData) {
+        for (const [newKey, val] of Object.entries(changedData)) {
           let reference = posCopy;
           const keyArr = newKey.split('.');
           while (keyArr.length > 1) {

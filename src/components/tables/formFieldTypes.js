@@ -79,7 +79,6 @@ function getValue (target, field) {
     default:
       setValue = target.value;
   }
-  console.log(setValue);
   return setValue;
 }
 

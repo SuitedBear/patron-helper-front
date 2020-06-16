@@ -2,6 +2,7 @@ import React from 'react';
 
 import { DataView } from '../components/tables/dataView';
 import { BoolField, TextField } from '../components/tables/formFieldTypes';
+import { duplicator } from '../utils/flattener';
 
 function Patrons (props) {
   const [patronList, setPatronList] = React.useState(null);
@@ -39,8 +40,23 @@ function Patrons (props) {
   }, [props]);
 
   function handleSaveChanges (data) {
-    console.log(data);
-    console.log(patronList);
+    const newPatronList = [];
+    for (const pos of patronList) {
+      const posCopy = duplicator(pos);
+      const changedData = data.get(posCopy.id);
+      if (changedData) {
+        for (const [newKey, val] of Object.entries(changedData)) {
+          let reference = posCopy;
+          const keyArr = newKey.split('.');
+          while (keyArr.length > 1) {
+            reference = reference[keyArr.shift()];
+          }
+          reference[keyArr[0]] = val;
+        }
+      }
+      newPatronList.push(posCopy);
+    }
+    console.log(newPatronList);
   }
 
   return (
