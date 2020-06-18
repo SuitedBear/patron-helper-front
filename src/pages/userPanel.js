@@ -8,7 +8,6 @@ import { Service } from './service';
 /**
  * @TODO: should have
  *  - user services list
- *  - some link to todo list
  *  - way to edit logged user data
  *
  *  props: token, onStateChange

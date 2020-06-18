@@ -39,12 +39,36 @@ function Todos (props) {
     getTodoList();
   }, [props]);
 
-  function handleSaveChanges (data) {
+  async function sendChanges (data) {
+    const msgBody = {
+      data,
+      fields: [
+        'notes'
+      ]
+    };
+    const result = await window.fetch(
+      `${props.serverAddress}/services/${props.serviceId}/bulkedittodo`, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          Authorization: `Bearer ${props.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(msgBody)
+      }
+    );
+    if (result.ok) {
+      const newList = await result.json();
+      return newList;
+    } else return null;
+  }
+
+  async function handleSaveChanges (data, editedIds) {
     const newTodoList = [];
     for (const pos of todoList) {
       const posCopy = duplicator(pos);
       const changedData = data.get(posCopy.id);
-      if (changedData) {
+      if (changedData && editedIds.has(posCopy.id)) {
         for (const [newKey, val] of Object.entries(changedData)) {
           let reference = posCopy;
           const keyArr = newKey.split('.');
@@ -53,10 +77,19 @@ function Todos (props) {
           }
           reference[keyArr[0]] = val;
         }
+        newTodoList.push(posCopy);
       }
-      newTodoList.push(posCopy);
     }
-    console.log(newTodoList);
+    if (newTodoList.length > 0) {
+      const newList = await sendChanges(newTodoList);
+      if (newList) {
+        setTodoList(newList);
+        console.log('save successfull');
+        window.alert('Data saved.');
+      } else {
+        window.alert('There was an error while saving data :<');
+      }
+    }
   }
 
   return (

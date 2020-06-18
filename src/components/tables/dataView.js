@@ -32,12 +32,18 @@ class DataView extends React.Component {
       editFocus: -1,
       sortMap: sortMap,
       dataMap: dataMap,
-      unsavedChanges: false
+      editedIds: new Set()
     };
     this.handleFilter = this.handleFilter.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDataRow = this.handleDataRow.bind(this);
     this.handleSave = this.handleSave.bind(this);
+  }
+
+  componentWillUnmount () {
+    if (this.state.editedIds.size > 0) {
+      console.log('unsaved changes !');
+    }
   }
 
   handleSort (key) {
@@ -68,9 +74,6 @@ class DataView extends React.Component {
   }
 
   handleDataRow (event, dataObj) {
-    console.log(event.target);
-    console.log(event.target.parentNode);
-    console.log(dataObj);
     this.setState({ editFocus: dataObj.id });
   }
 
@@ -78,16 +81,22 @@ class DataView extends React.Component {
     console.log(data);
     const newDataMap = new Map(this.state.dataMap);
     newDataMap.set(this.state.editFocus, data);
+    const newEditedIds = new Set(this.state.editedIds);
+    newEditedIds.add(this.state.editFocus);
     this.setState({
       editFocus: -1,
       dataMap: newDataMap,
-      unsavedChanges: true
+      editedIds: newEditedIds
     });
   }
 
   handleSave () {
-    this.props.onSaveChanges(this.state.dataMap);
-    this.setState({ unsavedChanges: false });
+    const editedIds = new Set(this.state.editedIds);
+    this.setState({ editedIds: new Set() });
+    this.props.onSaveChanges(
+      this.state.dataMap,
+      editedIds
+    );
   }
 
   render () {

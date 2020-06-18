@@ -39,12 +39,36 @@ function Patrons (props) {
     getPatronList();
   }, [props]);
 
-  function handleSaveChanges (data) {
+  async function sendChanges (data) {
+    const msgBody = {
+      data,
+      fields: [
+        'notes'
+      ]
+    };
+    const result = await window.fetch(
+      `${props.serverAddress}/services/${props.serviceId}/patrons/bulkedit`, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          Authorization: `Bearer ${props.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(msgBody)
+      }
+    );
+    if (result.ok) {
+      const newList = await result.json();
+      return newList;
+    } else return null;
+  }
+
+  async function handleSaveChanges (data, editedIds) {
     const newPatronList = [];
     for (const pos of patronList) {
       const posCopy = duplicator(pos);
       const changedData = data.get(posCopy.id);
-      if (changedData) {
+      if (changedData && editedIds.has(posCopy.id)) {
         for (const [newKey, val] of Object.entries(changedData)) {
           let reference = posCopy;
           const keyArr = newKey.split('.');
@@ -53,10 +77,19 @@ function Patrons (props) {
           }
           reference[keyArr[0]] = val;
         }
+        newPatronList.push(posCopy);
       }
-      newPatronList.push(posCopy);
     }
-    console.log(newPatronList);
+    if (newPatronList.length > 0) {
+      const newList = await sendChanges(newPatronList);
+      if (newList) {
+        setPatronList(newList);
+        console.log('save successfull');
+        window.alert('Data saved.');
+      } else {
+        window.alert('There was an error while saving data :<');
+      }
+    }
   }
 
   return (
