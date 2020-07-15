@@ -84,6 +84,7 @@ function Todos (props) {
       const newList = await sendChanges(newTodoList);
       if (newList) {
         setTodoList(newList);
+        props.onChanges(false);
         console.log('save successfull');
         window.alert('Data saved.');
       } else {
@@ -102,6 +103,7 @@ function Todos (props) {
               types={todoMap}
               columns={todoColumns}
               onSaveChanges={handleSaveChanges}
+              onChanges={props.onChanges}
             />
           )
           : (<div>Loading Patron List...</div>)

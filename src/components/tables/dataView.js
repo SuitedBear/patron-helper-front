@@ -79,6 +79,7 @@ class DataView extends React.Component {
 
   handleEdit (data) {
     console.log(data);
+    this.props.onChanges(true);
     const newDataMap = new Map(this.state.dataMap);
     newDataMap.set(this.state.editFocus, data);
     const newEditedIds = new Set(this.state.editedIds);

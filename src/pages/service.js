@@ -3,6 +3,7 @@ import React from 'react';
 import { Levels } from './levels';
 import { Patrons } from './patrons';
 import { Todos } from './todos';
+import { Rewards } from './rewards';
 
 // TODO: add csv import button
 function Service (props) {
@@ -34,6 +35,7 @@ function Service (props) {
             serviceId={props.serviceId}
             token={props.token}
             serverAddress={props.serverAddress}
+            onChanges={props.onChanges}
           />
         );
         break;
@@ -43,6 +45,7 @@ function Service (props) {
             serviceId={props.serviceId}
             token={props.token}
             serverAddress={props.serverAddress}
+            onChanges={props.onChanges}
           />
         );
         break;
@@ -52,6 +55,17 @@ function Service (props) {
             serviceId={props.serviceId}
             token={props.token}
             serverAddress={props.serverAddress}
+            onChanges={props.onChanges}
+          />
+        );
+        break;
+      case (4):
+        setComponent(
+          <Rewards
+            serviceId={props.serviceId}
+            token={props.token}
+            serverAddress={props.serverAddress}
+            onChanges={props.onChanges}
           />
         );
         break;

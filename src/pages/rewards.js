@@ -1,42 +1,36 @@
 import React from 'react';
 
 import { DataView } from '../components/tables/dataView';
-import { BoolField, TextField } from '../components/tables/formFieldTypes';
+import { TextField } from '../components/tables/formFieldTypes';
 import { duplicator } from '../utils/flattener';
 
-function Patrons (props) {
-  const [patronList, setPatronList] = React.useState(null);
-  const patronColumns = new Map([
-    ['id', 'id'],
-    ['patron.name', 'nazwa'],
-    ['patron.email', 'email'],
-    ['active', 'aktywny'],
-    ['supportAmount', 'kwota wsparcia'],
-    ['notes', 'uwagi'],
-    ['updatedAt', 'ostatnia zmiana']
+function Rewards (props) {
+  const [rewardList, setRewardList] = React.useState(null);
+  const rewardColumns = new Map([
+
   ]);
-  const patronMap = new Map([
-    ['active', BoolField],
-    ['notes', TextField],
-    ['patron.name', TextField]
+  const rewardMap = new Map([
+    ['name', TextField]
   ]);
 
+  // NEEDS ENDPOINTS !!!
+
   React.useEffect(() => {
-    async function getPatronList () {
-      const patronDataRaw = await window.fetch(
-        `${props.serverAddress}/services/${props.serviceId}/patrons/complex`, {
+    async function getRewardList () {
+      const recievedData = await window.fetch(
+        `${props.serverAddress}/services/${props.serviceId}/`, {
           mode: 'cors',
           headers: {
             Authorization: `Bearer ${props.token}`
           }
         }
       );
-      if (patronDataRaw.ok) {
-        const patronDataParsed = await patronDataRaw.json();
-        setPatronList(patronDataParsed);
+      if (recievedData.ok) {
+        const rewardDataParsed = await recievedData.json();
+        setRewardList(rewardDataParsed);
       }
     }
-    getPatronList();
+    getRewardList();
   }, [props]);
 
   async function sendChanges (data) {
@@ -47,7 +41,7 @@ function Patrons (props) {
       ]
     };
     const result = await window.fetch(
-      `${props.serverAddress}/services/${props.serviceId}/patrons/bulkedit`, {
+      `${props.serverAddress}/services/${props.serviceId}`, {
         method: 'POST',
         mode: 'cors',
         headers: {
@@ -64,8 +58,8 @@ function Patrons (props) {
   }
 
   async function handleSaveChanges (data, editedIds) {
-    const newPatronList = [];
-    for (const pos of patronList) {
+    const newRewardList = [];
+    for (const pos of rewardList) {
       const posCopy = duplicator(pos);
       const changedData = data.get(posCopy.id);
       if (changedData && editedIds.has(posCopy.id)) {
@@ -77,16 +71,15 @@ function Patrons (props) {
           }
           reference[keyArr[0]] = val;
         }
-        newPatronList.push(posCopy);
+        newRewardList.push(posCopy);
       }
     }
-    if (newPatronList.length > 0) {
-      const newList = await sendChanges(newPatronList);
+    if (newRewardList.length > 0) {
+      const newList = await sendChanges(newRewardList);
       if (newList) {
-        setPatronList(newList);
+        setRewardList(newList);
         props.onChanges(false);
-        console.log('save successfull');
-        window.alert('Data saved.');
+        window.alert('Data seved');
       } else {
         window.alert('There was an error while saving data :<');
       }
@@ -96,20 +89,20 @@ function Patrons (props) {
   return (
     <div>
       {
-        (patronList)
+        (rewardList)
           ? (
             <DataView
-              data={patronList}
-              types={patronMap}
-              columns={patronColumns}
+              data={rewardList}
+              types={rewardMap}
+              columns={rewardColumns}
               onSaveChanges={handleSaveChanges}
               onChanges={props.onChanges}
             />
           )
-          : (<div>Loading Patron List...</div>)
+          : (<div>Loading reward list...</div>)
       }
     </div>
   );
 }
 
-export { Patrons };
+export { Rewards };

@@ -15,14 +15,40 @@ import { Service } from './service';
 function UserPanel (props) {
   const [ServiceId, setServiceId] = React.useState(0);
   const [subService, setSubService] = React.useState(0);
+  const [unsavedChanges, setUnsavedChanges] = React.useState(false);
+
+  const handleMenuChange = (newState) => {
+    if (unsavedChanges) {
+      const discardChanges = window.confirm(
+        'Zmiany nie zostały zapisane, czy na pewno chcesz kontynuować?'
+      );
+      if (!discardChanges) return;
+    }
+    setUnsavedChanges(false);
+    switch (newState) {
+      case (10):
+        setServiceId(0);
+        break;
+      case (11):
+        setServiceId(-1);
+        break;
+      case (0):
+      case (1):
+      case (2):
+      case (3):
+      case (4):
+        setSubService(newState);
+        break;
+      default:
+        props.onStateChange(0);
+    }
+  };
 
   return (
     <div className='user-panel'>
       <Menu
         serviceId={ServiceId}
-        setServiceId={setServiceId}
-        setSubService={setSubService}
-        onLogout={props.onStateChange}
+        onMenuChange={handleMenuChange}
       />
       {
         (ServiceId > 0)
@@ -32,6 +58,7 @@ function UserPanel (props) {
               subService={subService}
               serverAddress={props.serverAddress}
               token={props.token}
+              onChanges={setUnsavedChanges}
             />
           )
           : (ServiceId === -1)
@@ -43,6 +70,7 @@ function UserPanel (props) {
                 serverAddress={props.serverAddress}
                 token={props.token}
                 setServiceId={setServiceId}
+                onChanges={setUnsavedChanges}
               />
             )
       }
