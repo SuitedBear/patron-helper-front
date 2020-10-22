@@ -2,7 +2,15 @@ import React from 'react';
 import { DropDownField, BoolField, TextField, NumberField, getValue }
   from './formFieldTypes';
 
-const statuses = ['done', 'for shipment', 'in progress', 'new'];
+const statuses = [
+  { id: 0, name: 'done' },
+  { id: 1, name: 'for shipment' },
+  { id: 2, name: 'in progress' },
+  { id: 3, name: 'new' }
+];
+const optionsFallback = {
+  status: statuses
+};
 const typesFallback = new Map([
   ['user', TextField],
   ['active', BoolField],
@@ -35,13 +43,14 @@ class EditRow extends React.Component {
   render () {
     const formFields = this.props.keys.map(key => {
       const entry = this.state.formData[key];
+      const optionList = this.props.options || optionsFallback;
       const Ele = this.types.get(key);
       if (Ele) {
         return (
           <Ele
             key={key}
             entry={[key, entry]}
-            optionList={this.props.options || statuses}
+            optionList={optionList[key] || statuses}
             handleChange={this.changeHandler}
           />
         );
@@ -51,7 +60,7 @@ class EditRow extends React.Component {
             className='data-cell'
             key={key}
           >
-            {entry}
+            {`${entry}`}
           </div>
         );
       }

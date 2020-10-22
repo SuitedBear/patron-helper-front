@@ -16,17 +16,7 @@ class DataView extends React.Component {
       // name: [column name, show, sort (true == asc)]
       sortMap.set(name, [columnName, true, true]);
     }
-    const dataMap = new Map();
-    const flattenedData = this.props.data.map(pos => flattener(pos));
-    flattenedData.forEach(dataObj => {
-      const newObj = {};
-      for (const entry of Object.entries(dataObj)) {
-        if (sortMap.has(entry[0])) {
-          newObj[entry[0]] = entry[1];
-        }
-      }
-      dataMap.set(dataObj.id, newObj);
-    });
+    const dataMap = this.buildDataMap(sortMap);
     this.types = (this.props.types || null);
     this.state = {
       editFocus: -1,
@@ -38,6 +28,22 @@ class DataView extends React.Component {
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDataRow = this.handleDataRow.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.handleBack = this.handleBack.bind(this);
+  }
+
+  buildDataMap (sortMap) {
+    const dataMap = new Map();
+    const flattenedData = this.props.data.map(pos => flattener(pos));
+    flattenedData.forEach(dataObj => {
+      const newObj = {};
+      for (const entry of Object.entries(dataObj)) {
+        if (sortMap.has(entry[0])) {
+          newObj[entry[0]] = entry[1];
+        }
+      }
+      dataMap.set(dataObj.id, newObj);
+    });
+    return dataMap;
   }
 
   componentWillUnmount () {
@@ -74,6 +80,7 @@ class DataView extends React.Component {
   }
 
   handleDataRow (event, dataObj) {
+    console.log(dataObj.id);
     this.setState({ editFocus: dataObj.id });
   }
 
@@ -100,8 +107,21 @@ class DataView extends React.Component {
     );
   }
 
-  render () {
+  handleBack (saved) {
+    if (saved) {
+      const newDataMap = this.buildDataMap(this.state.sortMap);
+      this.setState({
+        dataMap: newDataMap,
+        editFocus: -1
+      });
+    } else this.setState({ editFocus: -1 });
+    this.props.onChanges(false);
+  }
+
+  generateTable () {
     const { dataMap, sortMap, editFocus } = this.state;
+    const rows = [];
+
     const keys = Array.from(sortMap.keys())
       .filter(key => sortMap.get(key)[1]);
     const titleRow = keys.map(key => (
@@ -114,7 +134,6 @@ class DataView extends React.Component {
       </div>
     ));
 
-    const rows = [];
     for (const entry of dataMap) {
       (entry[0] === editFocus)
         ? rows.push(
@@ -123,6 +142,7 @@ class DataView extends React.Component {
             dataPoint={entry[1]}
             keys={keys}
             onHandleEdit={this.handleEdit}
+            options={this.props.options}
             types={this.types}
           />
         )
@@ -139,14 +159,7 @@ class DataView extends React.Component {
     return (
       <>
         <div>
-          <button
-            onClick={this.handleSave}
-            className='filter-check'
-          >
-            Save
-          </button>
-        </div>
-        <div>
+          {/* Hide filters button? */}
           <Filters
             filterMap={this.state.sortMap}
             onFilterChange={this.handleFilter}
@@ -158,6 +171,77 @@ class DataView extends React.Component {
           </div>
           {rows}
         </div>
+      </>
+    );
+  }
+
+  handleNew () {
+    // new level template should be injected with separateEdit params
+    const newLevel = {
+      name: 'nowy',
+      value: 50,
+      cyclic: 0,
+      limit: 0,
+      multi: false,
+      individual: false,
+      once: false
+    };
+    return (
+      this.props.separateEdit(
+        newLevel,
+        this.handleBack,
+        true
+      )
+    );
+  }
+
+  render () {
+    let content = <span />;
+    if (this.props.separateEdit !== undefined &&
+        this.state.editFocus >= 0) {
+      const editedLevel = this.props.data.filter((pos) => {
+        return pos.id === this.state.editFocus;
+      })[0];
+      content = this.props.separateEdit(
+        editedLevel,
+        this.handleBack,
+        false
+      );
+    } else if (this.state.editFocus === -2) {
+      content = this.handleNew();
+    } else {
+      content = this.generateTable();
+    }
+
+    return (
+      <>
+        <div>
+          {
+            (this.state.editedIds.size > 0)
+              ? (
+                <button
+                  onClick={this.handleSave}
+                  className='filter-check'
+                >
+                  Save
+                </button>
+              )
+              : <span />
+          }
+          {
+            (this.props.newButton)
+              ? (
+                <button
+                  onClick={() => this.setState({ editFocus: -2 })}
+                  className='filter-check'
+                >
+                  New
+                </button>
+              )
+              : <span />
+          }
+        </div>
+        {content}
       </>
     );
   }

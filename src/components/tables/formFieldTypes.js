@@ -4,10 +4,10 @@ function DropDownField (props) {
   const options = props.optionList.map(element => {
     return (
       <option
-        key={element}
-        value={element}
+        key={element.id}
+        value={element.name}
       >
-        {element}
+        {element.name}
       </option>
     );
   });
