@@ -85,7 +85,6 @@ function Patrons (props) {
       if (newList) {
         setPatronList(newList);
         props.onChanges(false);
-        console.log('save successfull');
         window.alert('Data saved.');
       } else {
         window.alert('There was an error while saving data :<');

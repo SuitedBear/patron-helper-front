@@ -7,7 +7,10 @@ import { duplicator } from '../utils/flattener';
 function Rewards (props) {
   const [rewardList, setRewardList] = React.useState(null);
   const rewardColumns = new Map([
-
+    ['id', 'id'],
+    ['name', 'nazwa'],
+    ['levelId', 'próg'],
+    ['updatedAt', 'ostatnia zmiana']
   ]);
   const rewardMap = new Map([
     ['name', TextField]
@@ -18,7 +21,7 @@ function Rewards (props) {
   React.useEffect(() => {
     async function getRewardList () {
       const recievedData = await window.fetch(
-        `${props.serverAddress}/services/${props.serviceId}/`, {
+        `${props.serverAddress}/services/${props.serviceId}/rewards`, {
           mode: 'cors',
           headers: {
             Authorization: `Bearer ${props.token}`

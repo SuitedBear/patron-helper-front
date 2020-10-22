@@ -6,19 +6,26 @@ import { duplicator } from '../utils/flattener';
 
 function Todos (props) {
   const [todoList, setTodoList] = React.useState(null);
+  const [rewardList, setRewardList] = React.useState(null);
+  const [optionLists, setOptionLists] = React.useState({});
   const todoColumns = new Map([
     ['id', 'id'],
+    ['status.name', 'status'],
+    ['name', 'nazwa'],
     ['updatedAt', 'ostatnia zmiana'],
     ['patronInService.patron.name', 'patron'],
     ['patronInService.patron.email', 'email'],
     ['reward.name', 'nagroda'],
-    ['patronInService.notes', 'notatki'],
-    ['status', 'status']
+    ['patronInService.patron.firstName', 'imię'],
+    ['patronInService.patron.lastName', 'nazwisko'],
+    ['patronInService.patron.address', 'adres'],
+    ['patronInService.notes', 'notatki']
   ]);
   const todoMap = new Map([
-    ['status', DropDownField],
+    ['status.name', DropDownField],
     ['patronInService.notes', TextField],
-    ['reward', TextField]
+    ['patronInService.patron.address', TextField],
+    ['reward.name', TextField]
   ]);
 
   React.useEffect(() => {
@@ -36,7 +43,40 @@ function Todos (props) {
         setTodoList(todoDataParsed);
       }
     }
+    async function getStatusList () {
+      const recievedData = await window.fetch(
+        `${props.serverAddress}/services/${props.serviceId}/levels/status`, {
+          mode: 'cors',
+          headers: {
+            Authorization: `Bearer ${props.token}`
+          }
+        }
+      );
+      if (recievedData.ok) {
+        const statusListParsed = await recievedData.json();
+        console.log(statusListParsed);
+        setOptionLists({
+          'status.name': statusListParsed
+        });
+      }
+    }
+    async function getRewardList () {
+      const recievedData = await window.fetch(
+        `${props.serverAddress}/services/${props.serviceId}/rewards`, {
+          mode: 'cors',
+          headers: {
+            Authorization: `Bearer ${props.token}`
+          }
+        }
+      );
+      if (recievedData.ok) {
+        const rewardListParsed = await recievedData.json();
+        setRewardList(rewardListParsed);
+      }
+    }
     getTodoList();
+    getStatusList();
+    getRewardList();
   }, [props]);
 
   async function sendChanges (data) {
@@ -102,11 +142,12 @@ function Todos (props) {
               data={todoList}
               types={todoMap}
               columns={todoColumns}
+              options={optionLists}
               onSaveChanges={handleSaveChanges}
               onChanges={props.onChanges}
             />
           )
-          : (<div>Loading Patron List...</div>)
+          : (<div>Loading Todo List...</div>)
       }
     </div>
   );
