@@ -10,6 +10,7 @@ function Service (props) {
   const [subServiceComponent, setComponent] =
     React.useState(<p>Service not loaded</p>);
   const [loadingState, setLoadingState] = React.useState('Generate Todos');
+  const [apiState, setApiState] = React.useState('Check API Data');
 
   React.useLayoutEffect(() => {
     async function handleGenerate (e) {
@@ -25,6 +26,27 @@ function Service (props) {
       if (res.ok) {
         setLoadingState('Generate Todos');
         console.log('generate successfull');
+      } else {
+        setLoadingState('Generating failed!');
+      }
+    }
+
+    async function handleApiData () {
+      setApiState('Getting API data...');
+      const apiInsert = await window.fetch(
+        `${props.serverAddress}/services/${props.serviceId}/api`, {
+          mode: 'cors',
+          headers: {
+            Authorization: `Bearer ${props.token}`
+          }
+        }
+      );
+      if (!apiInsert.ok) {
+        console.log('getting API data failed!');
+        setApiState('API insert failed!');
+      } else {
+        console.log('API insert successfull');
+        setApiState('Check API Data');
       }
     }
 
@@ -72,12 +94,13 @@ function Service (props) {
       default:
         setComponent(
           <div>
-            <div>Service Main</div>
+            <div>Service Main: {}</div>
             <button onClick={(e) => handleGenerate(e)}>{loadingState}</button>
+            <button onClick={() => handleApiData()}>{apiState}</button>
           </div>
         );
     }
-  }, [props, loadingState]);
+  }, [props, loadingState, apiState]);
 
   return (
     <div>

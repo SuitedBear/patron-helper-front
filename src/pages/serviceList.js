@@ -3,7 +3,8 @@ import React from 'react';
 function ServiceList (props) {
   const [serviceList, setServiceList] = React.useState([]);
   const [newServiceName, setNewServiceName] = React.useState('');
-  const [newServiceKey, setNewServiceKey] = React.useState('');
+  const [newApiLink, setNewApiLink] = React.useState('');
+  const [newApiKey, setNewApiKey] = React.useState('');
 
   async function fetchServiceList (props) {
     let newServiceList = [];
@@ -40,7 +41,8 @@ function ServiceList (props) {
     console.log('new service');
     const formData = {
       name: newServiceName,
-      link: newServiceKey
+      apiLink: newApiLink,
+      apiKey: newApiKey
     };
     const result = await window.fetch(
       `${props.serverAddress}/services/new`, {
@@ -55,7 +57,8 @@ function ServiceList (props) {
     );
     if (result.ok) {
       setNewServiceName('');
-      setNewServiceKey('');
+      setNewApiLink('');
+      setNewApiKey('');
       fetchServiceList(props).then(list => {
         console.log(list);
         setServiceList(list);
@@ -81,13 +84,22 @@ function ServiceList (props) {
             onChange={(e) => setNewServiceName(e.target.value)}
           />
         </label>
+        <label htmlFor='apiLink'>
+          API link:
+          <input
+            name='apiLink'
+            id='apiLink'
+            value={newApiLink}
+            onChange={(e) => setNewApiLink(e.target.value)}
+          />
+        </label>
         <label htmlFor='apiKey'>
           API key:
           <input
             name='apiKey'
             id='apiKey'
-            value={newServiceKey}
-            onChange={(e) => setNewServiceKey(e.target.value)}
+            value={newApiKey}
+            onChange={(e) => setNewApiKey(e.target.value)}
           />
         </label>
         <input type='submit' value='Create' />
