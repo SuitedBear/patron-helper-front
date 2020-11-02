@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Levels } from './levels';
 import { Patrons } from './patrons';
-import { Todos } from './todos';
+import { Todos } from './altTodos';
 import { Rewards } from './rewards';
 
 // TODO: add csv import button
