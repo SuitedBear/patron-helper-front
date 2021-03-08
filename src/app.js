@@ -10,11 +10,12 @@ class App extends React.Component {
   constructor (props) {
     super(props);
     this.serverAddress = props.serverAddress;
-    this.userStates = ['logged out', 'logged in', 'signing up'];
+    // this.userStates = ['logged out', 'logged in', 'signing up'];
     this.state = {
       userState: 0,
       token: null,
-      failedLogin: false
+      failedLogin: false,
+      userName: 'guest'
     };
     this.handleUserState = this.handleUserState.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
@@ -29,6 +30,7 @@ class App extends React.Component {
             serverAddress={this.serverAddress}
             onStateChange={this.handleUserState}
             token={this.state.token}
+            userName={this.state.userName}
           />
         );
       case (2):
@@ -57,7 +59,8 @@ class App extends React.Component {
       } else {
         this.setState({
           userState,
-          token: null
+          token: null,
+          userName: 'guest'
         });
       }
     }
@@ -88,7 +91,8 @@ class App extends React.Component {
           this.setState({
             token: data.token,
             userState: 1,
-            failedLogin: false
+            failedLogin: false,
+            userName: data.user.name
           });
         }
       })
@@ -123,10 +127,10 @@ class App extends React.Component {
 
   render () {
     return (
-      <div id='App'>
-        <div>
+      <div className='App'>
+        {/* <div>
           current state: {this.userStates[this.state.userState]}
-        </div>
+        </div> */}
         {this.handlePage(this.state.userState)}
       </div>
     );

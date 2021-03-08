@@ -70,7 +70,7 @@ function Levels (props) {
   };
 
   return (
-    <div>
+    <>
       {
         (levelList)
           ? (
@@ -95,7 +95,7 @@ function Levels (props) {
           )
           : (<div>Loading Level List...</div>)
       }
-    </div>
+    </>
   );
 }
 

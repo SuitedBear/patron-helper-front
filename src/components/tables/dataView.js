@@ -55,6 +55,7 @@ class DataView extends React.Component {
   handleSort (key) {
     const sortMap = new Map(this.state.sortMap);
     const sortKey = sortMap.get(key);
+    // sort sorting (for letters)
     const table = [...this.state.dataMap.values()].sort((a, b) => {
       if (a[key] === b[key]) return 0;
       return (sortKey[2])

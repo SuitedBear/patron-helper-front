@@ -6,6 +6,7 @@ import { Todos } from './altTodos';
 import { Rewards } from './rewards';
 
 // TODO: add csv import button
+// TODO: add service removal
 function Service (props) {
   const [subServiceComponent, setComponent] =
     React.useState(<p>Service not loaded</p>);
@@ -93,18 +94,17 @@ function Service (props) {
         break;
       default:
         setComponent(
-          <div>
+          <>
             <div>Service Main: {}</div>
             <button onClick={(e) => handleGenerate(e)}>{loadingState}</button>
             <button onClick={() => handleApiData()}>{apiState}</button>
-          </div>
+          </>
         );
     }
   }, [props, loadingState, apiState]);
 
   return (
-    <div>
-      <span style={{ margin: '15px' }}>service ID {props.serviceId}</span>
+    <div className='content'>
       {subServiceComponent}
     </div>
   );

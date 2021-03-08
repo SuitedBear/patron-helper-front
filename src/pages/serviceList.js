@@ -21,7 +21,10 @@ function ServiceList (props) {
         return (
           <li
             key={service.id}
-            onClick={() => props.setServiceId(service.id)}
+            onClick={() => props.setServiceId({
+              id: service.id,
+              name: service.name
+            })}
           >
             {service.name}
           </li>
@@ -60,7 +63,6 @@ function ServiceList (props) {
       setNewApiLink('');
       setNewApiKey('');
       fetchServiceList(props).then(list => {
-        console.log(list);
         setServiceList(list);
       });
     } else {
@@ -69,7 +71,7 @@ function ServiceList (props) {
   }
 
   return (
-    <div>
+    <div className='content'>
       <p>Service List</p>
       <ul style={{ listStyle: 'none' }}>
         {serviceList}

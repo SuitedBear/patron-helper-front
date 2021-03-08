@@ -2,7 +2,7 @@ import React from 'react';
 
 function UserEdit (props) {
   return (
-    <div>
+    <div className='content'>
       User Edit
     </div>
   );

@@ -134,7 +134,7 @@ function Todos (props) {
   }
 
   return (
-    <div>
+    <>
       {
         (todoList)
           ? (
@@ -149,7 +149,7 @@ function Todos (props) {
           )
           : (<div>Loading Todo List...</div>)
       }
-    </div>
+    </>
   );
 }
 

@@ -27,10 +27,10 @@ function UserPanel (props) {
     setUnsavedChanges(false);
     switch (newState) {
       case (10):
-        setServiceId(0);
+        setServiceId({...ServiceId, id: 0});
         break;
       case (11):
-        setServiceId(-1);
+        setServiceId({...ServiceId, id: -1});
         break;
       case (0):
       case (1):
@@ -47,21 +47,23 @@ function UserPanel (props) {
   return (
     <div className='user-panel'>
       <Menu
-        serviceId={ServiceId}
+        service={ServiceId}
+        subService={subService}
+        userName={props.userName}
         onMenuChange={handleMenuChange}
       />
       {
-        (ServiceId > 0)
+        (ServiceId.id > 0)
           ? (
             <Service
-              serviceId={ServiceId}
+              serviceId={ServiceId.id}
               subService={subService}
               serverAddress={props.serverAddress}
               token={props.token}
               onChanges={setUnsavedChanges}
             />
           )
-          : (ServiceId === -1)
+          : (ServiceId.id === -1)
             ? (
               <UserEdit />
             )

@@ -1,26 +1,22 @@
 import React from 'react';
+import { PatronEdit } from '../components/editRows/patronEdit';
 
-import { DataView } from '../components/tables/dataView';
-import { TextField } from '../components/tables/formFieldTypes';
+import { DataView } from '../components/tables/altDataViev';
 import { fetchData } from '../utils/customFetch';
-import { duplicator } from '../utils/flattener';
 
 function Patrons (props) {
   const [patronList, setPatronList] = React.useState(null);
-  // const [countableTodoList, setCountableTodoList] = React.useState(null);
-  // const [levelList, setLevelList] = React.useState(null);
-  const [patronColumns, setPatronColumns] = React.useState(null);
-
-  const patronMap = new Map([
-    ['patron.address', TextField],
-    ['notes', TextField],
-    ['patron.name', TextField]
-  ]);
-
-  // pobraĆ Levels i dodać jako kolumny
-  // dla każdego level podać ilość todo != done
-
+  const [editFocus, setEditFocus] = React.useState(-1);
+  const [editedFields, setEditedFields] = React.useState(new Set());
+  const [patronColumns, setPatronColumns] = React.useState(null)
+;
   React.useEffect(() => {
+    const connectionData = {
+      serverAddress: props.serverAddress,
+      serviceId: props.serviceId,
+      token: props.token
+    };
+
     async function getPatronList () {
       const patronDataRaw = await window.fetch(
         `${props.serverAddress}/services/${props.serviceId}/patrons/complex`, {
@@ -36,9 +32,10 @@ function Patrons (props) {
         return patronDataParsed;
       }
     }
+
     async function getCountableTodos () {
       const rawCountableTodos = await window.fetch(
-        `${props.serverAddress}/services/${props.serviceId}/countable`, {
+        `${props.serverAddress}/services/${props.serviceId}/todo/countable`, {
           mode: 'cors',
           headers: {
             Authorization: `Bearer ${props.token}`
@@ -47,10 +44,10 @@ function Patrons (props) {
       );
       if (rawCountableTodos.ok) {
         const countableParsed = await rawCountableTodos.json();
-        // setCountableTodoList(countableParsed);
         return countableParsed;
       }
     }
+
     async function getLevels (patrons, countable) {
       const columns = new Map([
         ['id', 'id'],
@@ -62,9 +59,10 @@ function Patrons (props) {
         ['supportAmount', 'kwota wsparcia'],
         ['patron.address', 'adres'],
         ['notes', 'uwagi'],
-        ['updatedAt', 'ostatnia zmiana']
+        ['updatedAt', 'ostatnia zmiana'],
+        ['wszystkie', 'wszystkie']
       ]);
-      const newLevelList = await fetchData(props, 'levels');
+      const newLevelList = await fetchData(connectionData, 'levels');
       if (newLevelList) {
         for (const level of newLevelList) {
           columns.set(`${level.name}`, `${level.name}`);
@@ -75,24 +73,55 @@ function Patrons (props) {
           const patronTodos = countable.filter(todo => {
             return todo.patronId === newPatron.id;
           });
+          let allRewardCount = 0;
           for (const level of newLevelList) {
-            const rewardCount = patronTodos.reduce((count, todo) => {
-              return (todo.reward.levelId === level.id) ? ++count : count;
+            const rewardsForLevel = patronTodos.filter(todo => {
+              return todo.reward.levelId === level.id;
+            });
+            const rewardCount = rewardsForLevel.reduce((count, todo) => {
+              return (todo.statusId !== 2) ? ++count : count;
             }, 0);
-            newPatron[`${level.name}`] = rewardCount;
+            newPatron[`${level.name}`] =
+              `${rewardCount}/${rewardsForLevel.length}`;
+            allRewardCount += rewardCount;
           }
+          newPatron['wszystkie'] =
+            `${allRewardCount}/${patronTodos.length}`;
           return newPatron;
         });
-        console.log(newPatronList);
         setPatronList(newPatronList);
       }
     }
+
     getPatronList().then(patrons => {
       getCountableTodos().then(todos => {
         getLevels(patrons, todos);
       });
     });
-  }, [props]);
+  }, [props.serverAddress, props.serviceId, props.token]);
+
+  function changeFocus (_e, rowData) {
+    setEditFocus(rowData.id);
+  }
+
+  function handleEdit (focus, newFieldState) {
+    props.onChanges(true);
+
+    const newPatronList = [...patronList];
+    const editedField = newPatronList.find(pos => pos.id === focus);
+
+    // crude, should iterate
+    editedField.notes = newFieldState['notes'];
+    editedField.patron.address = newFieldState['patron.address'];
+    editedField.patron.name = newFieldState['patron.name'];
+
+    setPatronList(newPatronList);
+    const newEditedFields = new Set(editedFields);
+    newEditedFields.add(focus);
+    setEditedFields(newEditedFields);
+    console.log(`handleEdit saved ${focus}`);
+    setEditFocus(-1);
+  }
 
   async function sendChanges (data) {
     const msgBody = {
@@ -101,6 +130,7 @@ function Patrons (props) {
         'notes'
       ]
     };
+    console.log(msgBody.data);
     const result = await window.fetch(
       `${props.serverAddress}/services/${props.serviceId}/patrons/bulkedit`, {
         method: 'POST',
@@ -118,27 +148,15 @@ function Patrons (props) {
     } else return null;
   }
 
-  async function handleSaveChanges (data, editedIds) {
-    const newPatronList = [];
-    for (const pos of patronList) {
-      const posCopy = duplicator(pos);
-      const changedData = data.get(posCopy.id);
-      if (changedData && editedIds.has(posCopy.id)) {
-        for (const [newKey, val] of Object.entries(changedData)) {
-          let reference = posCopy;
-          const keyArr = newKey.split('.');
-          while (keyArr.length > 1) {
-            reference = reference[keyArr.shift()];
-          }
-          reference[keyArr[0]] = val;
-        }
-        newPatronList.push(posCopy);
-      }
-    }
-    if (newPatronList.length > 0) {
+  async function handleSave (data, editedIds) {
+    const newPatronList = patronList.filter(
+      pos => editedFields.has(pos.id)
+    );
+    if (newPatronList) {
       const newList = await sendChanges(newPatronList);
       if (newList) {
         setPatronList(newList);
+        setEditedFields(new Set());
         props.onChanges(false);
         window.alert('Data saved.');
       } else {
@@ -147,22 +165,38 @@ function Patrons (props) {
     }
   }
 
+  const createEditRow = (dataKey, dataEntry, keys) => {
+    // const patronEntry = patronList.find(e => e.id === dataKey);
+    console.log('createEditRow');
+
+    return (
+      <PatronEdit
+        key={dataKey}
+        entry={dataEntry}
+        entryKey={dataKey}
+        keys={keys}
+        clickHandler={handleEdit}
+      />
+    )
+  }
+
   return (
-    <div>
+    <>
       {
         (patronList)
           ? (
             <DataView
               data={patronList}
-              types={patronMap}
               columns={patronColumns}
-              onSaveChanges={handleSaveChanges}
-              onChanges={props.onChanges}
+              editFocus={editFocus}
+              handleFocus={changeFocus}
+              handleSave={handleSave}
+              editRow={createEditRow}
             />
           )
           : (<div>Loading Patron List...</div>)
       }
-    </div>
+    </>
   );
 }
 
